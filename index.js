@@ -58,8 +58,15 @@ const getAccountInfo = async () => {
   try {
     const res = await readFile(`${CONFIG_DIR}/account`, "utf-8")
     const resArr = res.split("\r\n")
+    console.log(
+      parsePhoneNumber(resArr[0], "CN")?.formatNational().split(" ").join("")
+    )
     return {
-      phone: parsePhoneNumber(resArr[0], "CN")?.formatNational(),
+      // phone: resArr[0],
+      phone: parsePhoneNumber(resArr[0], "CN")
+        ?.formatNational()
+        .split(" ")
+        .join(""),
       password: resArr[1],
     }
   } catch (error) {
@@ -76,6 +83,7 @@ const loginByPhone = async () => {
     const api = await getLocalApi()
     const url = `${api}/login/cellphone`
     const accountInfo = await getAccountInfo()
+    console.log(accountInfo)
     const { phone, password } = accountInfo
     const { data } = await axios({
       method: "POST",
@@ -85,6 +93,7 @@ const loginByPhone = async () => {
         password,
       },
     })
+    console.log(data)
     res = data?.cookie ?? ""
   } catch (error) {
     res = ""
@@ -287,18 +296,19 @@ export const main = async () => {
   return res
 }
 
-getDailySongs("https://api.littlecontrol.me").then(
+loginByPhone().then(
   (res) => console.log(res),
   (error) => console.log(error)
 )
 
+// getDailySongs("https://api.littlecontrol.me").then(
+//   (res) => console.log(res),
+//   (error) => console.log(error)
+// )
+
 // getAccountInfo().then(
 //   (res) => {
-//     const phone = parsePhoneNumber(res.phone, "CN")
-//     console.log(phone?.country)
-//     console.log(phone?.number)
-//     console.log(phone?.formatNational())
-//     console.log(phone?.formatInternational())
+//     console.log(res)
 //   },
 //   (error) => console.log(error)
 // )
