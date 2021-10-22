@@ -1,0 +1,1 @@
+# AutoNeteaseMusic-ES6
